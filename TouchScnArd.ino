@@ -6,19 +6,18 @@ Nextion myNextion(nextion,9600);
 char charstring[80];
 char*pch;
 int field,event,page,id;
-int fsrAnalogPin = 1;
-int fsrReading;
-int scaled_value;
+int fsrAnalogPin = 1; //sets up communication between pressure sensor arduino board
+int fsrReading; //value for pressure 
+int scaled_value; //scaled value for pressure for slider interface
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
   myNextion.init();
   myNextion.sendCommand("page page0");
 }
 
 void loop(){
-  fsrReading = analogRead(fsrAnalogPin);
+  fsrReading = analogRead(fsrAnalogPin); //input pressure reading
   Serial.println(fsrReading);
   String message = myNextion.listen();
   field = 0;
@@ -37,12 +36,12 @@ void loop(){
   Serial.println(event);
   Serial.println(page);
   Serial.println(id);
-  scaled_value = map(fsrReading, 0, 670, 0, 100);
+  scaled_value = map(fsrReading, 0, 670, 0, 100); //scales the pressure reading to a scale of 0 to 100
   myNextion.setComponentValue("n0",scaled_value);
-  myNextion.setComponentValue("h0",scaled_value);
+  myNextion.setComponentValue("h0",scaled_value); //sends that pressure value to the touch screen
   if (scaled_value > 100){
     myNextion.sendCommand("page page1");
-    myNextion.setComponentText("t0","Stronger than Baggio!");
+    myNextion.setComponentText("t0","Stronger than Baggio!"); //compliments the user for successfully being strong enough
     }
   //myNextion.setComponentText("t0","Wow, you're strong");
   //myNextion.updateProgressBar(25,228,200,25,fsrReading,0,2);
